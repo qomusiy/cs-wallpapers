@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallpapers</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #0f1115;
+      color: #e8e8ea;
+      min-height: 100vh;
+    }
+    header { text-align: center; padding: 48px 16px 32px; }
+    header h1 { font-size: 2rem; font-weight: 700; }
+    header p { color: #9a9ca5; margin-top: 8px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px 48px;
+    }
+    .card {
+      background: #1a1d24;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #262a33;
+      transition: transform .2s, border-color .2s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: #3b82f6; }
+    .card img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      cursor: zoom-in;
+      background: #222;
+    }
+    .info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+    }
+    .name {
+      font-size: .9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn {
+      flex-shrink: 0;
+      background: #3b82f6;
+      color: #fff;
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+    .btn:hover { background: #2563eb; }
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.9);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      z-index: 10;
+    }
+    .modal.open { display: flex; }
+    .modal img { max-width: 100%; max-height: 80vh; border-radius: 8px; }
+    .close {
+      position: absolute;
+      top: 12px; right: 20px;
+      font-size: 2.2rem;
+      color: #fff;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    footer { text-align: center; color: #6b6e78; font-size: .85rem; padding-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Wallpapers</h1>
+    <p>Click a picture to preview, or hit Download.</p>
+  </header>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="modal" id="modal">
+    <button class="close" id="close" aria-label="Close">&times;</button>
+    <img id="modal-img" alt="">
+    <a class="btn" id="modal-dl" download>Download</a>
+  </div>
+
+  <footer>Free to download</footer>
+
+  <script>
+    // Add new wallpapers here (file names inside the "wallpapers" folder)
+    const wallpapers = [
+      "Computer Science TIIAME (1) (2).png",
+      "Komyuter savodxon.png",
+      "Komyuter savodxon(1).png",
+      "Komyuter savodxon(2).png",
+      "Komyuter savodxon(3).png",
+      "Excelni o’rganib kibirlangan kelin.png"
+    ];
+
+    const grid = document.getElementById("grid");
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modal-img");
+    const modalDl = document.getElementById("modal-dl");
+
+    wallpapers.forEach(file => {
+      const src = "wallpapers/" + encodeURIComponent(file);
+      const title = file.replace(/\.[^.]+$/, "");
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${src}" alt="${title}" loading="lazy">
+        <div class="info">
+          <span class="name" title="${title}">${title}</span>
+          <a class="btn" href="${src}" download="${file}">Download</a>
+        </div>`;
+      card.querySelector("img").onclick = () => {
+        modalImg.src = src;
+        modalDl.href = src;
+        modalDl.download = file;
+        modal.classList.add("open");
+      };
+      grid.appendChild(card);
+    });
+
+    const closeModal = () => modal.classList.remove("open");
+    document.getElementById("close").onclick = closeModal;
+    modal.onclick = e => { if (e.target === modal) closeModal(); };
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+  </script>
+</body>
+</html>
